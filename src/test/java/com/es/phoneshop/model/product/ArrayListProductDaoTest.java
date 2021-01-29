@@ -1,12 +1,18 @@
 package com.es.phoneshop.model.product;
 
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 import java.math.BigDecimal;
 import java.util.Currency;
 
+
+@RunWith(JUnitParamsRunner.class)
 public class ArrayListProductDaoTest extends Assert {
     private ProductDao productDao;
     private Product product;
@@ -18,6 +24,8 @@ public class ArrayListProductDaoTest extends Assert {
                 .forEach(p -> productDao.delete(p.getId()));
         product = new Product("first", "First test product", new BigDecimal(1), Currency.getInstance("USD"), 1, "https://sampleURL1.com");
     }
+
+    @Parameterized.Parameters
 
     @Test
     public void testSaveProduct() {
@@ -47,5 +55,22 @@ public class ArrayListProductDaoTest extends Assert {
     public void testProductGetsIdAfterSave() {
         productDao.save(product);
         assertNotNull(product.getId());
+    }
+
+    @Parameters(method = "provideZeroStockOrNullPrice")
+    @Test
+    public void testProductsWithNullPriceOrZeroStockAreIgnored(BigDecimal price, int stock) {
+        product.setPrice(price);
+        product.setStock(stock);
+        productDao.save(product);
+        assertFalse(productDao.findProducts().contains(product));
+        assertTrue(productDao.getProduct(product.getId()).isPresent());
+    }
+
+    private Object[] provideZeroStockOrNullPrice() {
+        return new Object[]{
+                new Object[]{null, 1},
+                new Object[]{new BigDecimal(0), 0}
+        };
     }
 }
