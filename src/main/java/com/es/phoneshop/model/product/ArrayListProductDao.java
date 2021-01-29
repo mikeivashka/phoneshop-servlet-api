@@ -56,7 +56,7 @@ public class ArrayListProductDao implements ProductDao {
     @Override
     public void delete(Long id) {
         readWriteLock.writeLock().lock();
-        products.removeIf(p -> id.equals(p.getId()));
+        products.removeIf(p -> p.getId().equals(id));
         readWriteLock.writeLock().unlock();
     }
 

@@ -14,25 +14,9 @@ public class ArrayListProductDaoTest extends Assert {
     @Before
     public void setup() {
         productDao = ArrayListProductDao.getInstance();
-        product = new Product("simsxg76", "Siemens SXG75", new BigDecimal(150), Currency.getInstance("USD"), 40, "sampleURL");
-    }
-
-    @Test
-    public void testGetProduct() {
-        Product productToGet = productDao.findProducts().get(0);
-        assertEquals(productToGet, productDao.getProduct(productToGet.getId()).get());
-    }
-
-    @Test
-    public void testFindProductsNotEmpty() {
-        assertFalse(productDao.findProducts().isEmpty());
-    }
-
-    @Test
-    public void testDeleteProduct() {
-        Long productToDeleteId = productDao.findProducts().get(0).getId();
-        productDao.delete(productToDeleteId);
-        assertFalse(productDao.getProduct(productToDeleteId).isPresent());
+        productDao.findProducts()
+                .forEach(p -> productDao.delete(p.getId()));
+        product = new Product("first", "First test product", new BigDecimal(1), Currency.getInstance("USD"), 1, "https://sampleURL1.com");
     }
 
     @Test
@@ -42,8 +26,25 @@ public class ArrayListProductDaoTest extends Assert {
     }
 
     @Test
+    public void testGetProduct() {
+        productDao.save(product);
+        assertEquals(product, productDao.getProduct(product.getId()).get());
+    }
+
+    @Test
+    public void testFindProductsIsEmpty() {
+        assertTrue(productDao.findProducts().isEmpty());
+    }
+
+    @Test
+    public void testDeleteProduct() {
+        productDao.save(product);
+        productDao.delete(product.getId());
+        assertFalse(productDao.getProduct(product.getId()).isPresent());
+    }
+
+    @Test
     public void testProductGetsIdAfterSave() {
-        assertNull(product.getId());
         productDao.save(product);
         assertNotNull(product.getId());
     }
