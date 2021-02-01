@@ -16,6 +16,7 @@ import java.util.Currency;
 public class ArrayListProductDaoTest extends Assert {
     private ProductDao productDao;
     private Product product;
+    private Product product2;
 
     @Before
     public void setup() {
@@ -23,9 +24,8 @@ public class ArrayListProductDaoTest extends Assert {
         productDao.findProducts()
                 .forEach(p -> productDao.delete(p.getId()));
         product = new Product("first", "First test product", new BigDecimal(1), Currency.getInstance("USD"), 1, "https://sampleURL1.com");
+        product2 = new Product("second", "Second test product", new BigDecimal(2), Currency.getInstance("USD"), 2, "https://sampleURL2.com");
     }
-
-    @Parameterized.Parameters
 
     @Test
     public void testSaveProduct() {
@@ -55,6 +55,15 @@ public class ArrayListProductDaoTest extends Assert {
     public void testProductGetsIdAfterSave() {
         productDao.save(product);
         assertNotNull(product.getId());
+    }
+
+    @Test
+    public void testProductIsUpdatedOnSaveIfIdIsUsed(){
+        productDao.save(product);
+        Long firstProductId = product.getId();
+        product2.setId(firstProductId);
+        productDao.save(product2);
+        assertEquals(product2, productDao.getProduct(firstProductId).get());
     }
 
     @Parameters(method = "provideZeroStockOrNullPrice")

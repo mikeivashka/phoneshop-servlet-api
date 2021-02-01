@@ -47,7 +47,11 @@ public class ArrayListProductDao implements ProductDao {
 
     @Override
     public void save(Product product) {
-        product.setId(maxId.getAndIncrement());
+        if (product.getId() != null && this.getProduct(product.getId()).isPresent()) {
+            this.delete(product.getId());
+        } else {
+            product.setId(maxId.getAndIncrement());
+        }
         readWriteLock.writeLock().lock();
         products.add(product);
         readWriteLock.writeLock().unlock();
