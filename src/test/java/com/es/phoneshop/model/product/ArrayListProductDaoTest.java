@@ -1,42 +1,51 @@
 package com.es.phoneshop.model.product;
 
+import com.es.phoneshop.model.product.impl.ArrayListProductDao;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 
 import java.math.BigDecimal;
-import java.util.Currency;
+
+import static org.junit.Assert.*;
 
 
 @RunWith(JUnitParamsRunner.class)
-public class ArrayListProductDaoTest extends Assert {
+public class ArrayListProductDaoTest extends ProductTestCommonConditions {
     private ProductDao productDao;
-    private Product product;
-    private Product product2;
 
     @Before
     public void setup() {
         productDao = ArrayListProductDao.getInstance();
         productDao.findProducts()
                 .forEach(p -> productDao.delete(p.getId()));
-        product = new Product("first", "First test product", new BigDecimal(1), Currency.getInstance("USD"), 1, "https://sampleURL1.com");
-        product2 = new Product("second", "Second test product", new BigDecimal(2), Currency.getInstance("USD"), 2, "https://sampleURL2.com");
     }
 
     @Test
     public void testSaveProduct() {
-        productDao.save(product);
-        assertTrue(productDao.findProducts().contains(product));
+        productDao.save(product1);
+        assertTrue(productDao.findProducts().contains(product1));
     }
 
     @Test
     public void testGetProduct() {
-        productDao.save(product);
-        assertEquals(product, productDao.getProduct(product.getId()).get());
+        productDao.save(product1);
+        assertEquals(product1, productDao.getProduct(product1.getId()).get());
+    }
+
+    @Test
+    public void testFindProductsWithEmptyQuery() {
+        productDao.save(product1);
+        assertEquals(productDao.findProducts(), productDao.findProducts(""));
+    }
+
+    @Test
+    public void testFindProductsWithDescriptionFullMatchesQuery() {
+        productDao.save(product1);
+        productDao.save(product2);
+        assertTrue(productDao.findProducts(product1.getDescription()).contains(product1));
     }
 
     @Test
@@ -46,21 +55,21 @@ public class ArrayListProductDaoTest extends Assert {
 
     @Test
     public void testDeleteProduct() {
-        productDao.save(product);
-        productDao.delete(product.getId());
-        assertFalse(productDao.getProduct(product.getId()).isPresent());
+        productDao.save(product1);
+        productDao.delete(product1.getId());
+        assertFalse(productDao.getProduct(product1.getId()).isPresent());
     }
 
     @Test
     public void testProductGetsIdAfterSave() {
-        productDao.save(product);
-        assertNotNull(product.getId());
+        productDao.save(product1);
+        assertNotNull(product1.getId());
     }
 
     @Test
-    public void testProductIsUpdatedOnSaveIfIdIsUsed(){
-        productDao.save(product);
-        Long firstProductId = product.getId();
+    public void testProductIsUpdatedOnSaveIfIdIsUsed() {
+        productDao.save(product1);
+        Long firstProductId = product1.getId();
         product2.setId(firstProductId);
         productDao.save(product2);
         assertEquals(product2, productDao.getProduct(firstProductId).get());
@@ -69,11 +78,11 @@ public class ArrayListProductDaoTest extends Assert {
     @Parameters(method = "provideZeroStockOrNullPrice")
     @Test
     public void testProductsWithNullPriceOrZeroStockAreIgnored(BigDecimal price, int stock) {
-        product.setPrice(price);
-        product.setStock(stock);
-        productDao.save(product);
-        assertFalse(productDao.findProducts().contains(product));
-        assertTrue(productDao.getProduct(product.getId()).isPresent());
+        product1.setPrice(price);
+        product1.setStock(stock);
+        productDao.save(product1);
+        assertFalse(productDao.findProducts().contains(product1));
+        assertTrue(productDao.getProduct(product1.getId()).isPresent());
     }
 
     private Object[] provideZeroStockOrNullPrice() {

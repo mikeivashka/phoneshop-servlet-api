@@ -1,5 +1,6 @@
 package com.es.phoneshop.web;
 
+import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -8,10 +9,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
@@ -29,21 +28,24 @@ public class ProductListPageServletTest {
     @Mock
     private ServletConfig servletConfig;
 
+    @SneakyThrows
     @Before
-    public void setup() throws ServletException {
+    public void setup() {
         servlet.init(servletConfig);
         when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
     }
 
+    @SneakyThrows
     @Test
-    public void testDoGet() throws ServletException, IOException {
+    public void testDoGet() {
         servlet.doGet(request, response);
 
         verify(requestDispatcher).forward(request, response);
     }
 
+    @SneakyThrows
     @Test
-    public void testRequestContainsProducts() throws ServletException, IOException {
+    public void testRequestContainsProducts() {
         servlet.doGet(request, response);
 
         verify(request).setAttribute(eq("products"), anyList());
