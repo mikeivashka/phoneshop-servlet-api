@@ -10,7 +10,7 @@
 <body class="product-list">
   <header>
     <a href="${pageContext.servletContext.contextPath}">
-      <img src="${pageContext.servletContext.contextPath}/images/logo.svg"/>
+      <img src="${pageContext.servletContext.contextPath}/images/logo.svg" alt="logo"/>
       PhoneShop
     </a>
   </header>
