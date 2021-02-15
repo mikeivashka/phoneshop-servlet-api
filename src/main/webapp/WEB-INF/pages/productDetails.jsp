@@ -4,7 +4,15 @@
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 
 <jsp:useBean id="product" type="com.es.phoneshop.model.product.Product" scope="request"/>
-<tags:master pageTitle="${product.description}">
+<c:set var="inCart" value="0"/>
+<c:forEach var="cartItem" items="${sessionScope.cart.items}">
+    <c:if test="${cartItem.product.equals(product)}">
+        <c:set var="inCart" value="${cartItem.quantity}"/>
+    </c:if>
+</c:forEach>
+<c:set var="totalPrice" value="${product.price.doubleValue() * inCart}"/>
+<tags:master pageTitle="${product.description}" errorMessage="${param.errorMessage}"
+             successMessage="${param.successMessage}">
     <table>
         <tbody>
         <tr>
@@ -33,4 +41,14 @@
         </tr>
         </tbody>
     </table>
+    <form method="post">
+        <label for="quantity">${inCart eq 0 ? "Choose amount" : 'Total: '.concat(totalPrice)}<br></label>
+        <input
+                id="quantity"
+                value="${inCart eq 0 ? 1 : inCart}"
+                type="number"
+                min="0" max="${product.stock}" name="quantity"/>
+        <button ${product.stock eq 0 ? 'disabled' : ''}
+                type="submit">${inCart eq 0 ? 'Add to cart' : 'Change amount'}</button>
+    </form>
 </tags:master>
