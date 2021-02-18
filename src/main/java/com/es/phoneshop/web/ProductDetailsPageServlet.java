@@ -1,6 +1,5 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.exception.OutOfStockException;
 import com.es.phoneshop.model.cart.Cart;
 import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.product.ProductService;
@@ -13,26 +12,23 @@ import org.springframework.web.util.WebUtils;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.text.NumberFormat;
-import java.text.ParseException;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-import static com.es.phoneshop.constant.RequestParameterConstants.*;
+import static com.es.phoneshop.constant.RequestParameterConstants.QUANTITY_REQUEST_PARAMETER;
+import static com.es.phoneshop.constant.RequestParameterConstants.SUCCESS_MESSAGE_REQUEST_PARAMETER;
 import static com.es.phoneshop.constant.SessionAttributeConstants.CART_SESSION_ATTRIBUTE;
 import static com.es.phoneshop.constant.SessionAttributeConstants.RECENT_PRODUCTS_SESSION_ATTRIBUTE;
-import static com.es.phoneshop.constant.UserMessageConstants.NOT_A_NUMBER_MESSAGE;
-import static com.es.phoneshop.constant.UserMessageConstants.UNKNOWN_ERROR_MESSAGE;
 
 
-public class ProductDetailsPageServlet extends HttpServlet {
+public class ProductDetailsPageServlet extends AbstractServlet {
     private ProductService productService;
     private RecentProductsService recentProductsService;
     private SessionService sessionService;
@@ -77,12 +73,8 @@ public class ProductDetailsPageServlet extends HttpServlet {
             Product product = extractProductFromRequest(req).orElseThrow(NoSuchElementException::new);
             String successMessage = sessionService.updateCurrentCart(session, product, quantity);
             redirectUrl.append(SUCCESS_MESSAGE_REQUEST_PARAMETER + "=").append(successMessage);
-        } catch (NoSuchElementException e) {
-            redirectUrl.append(ERROR_MESSAGE_REQUEST_PARAMETER + "=").append(UNKNOWN_ERROR_MESSAGE);
-        } catch (OutOfStockException e) {
-            redirectUrl.append(ERROR_MESSAGE_REQUEST_PARAMETER + "=").append(e.getMessage());
-        } catch (ParseException e) {
-            redirectUrl.append(ERROR_MESSAGE_REQUEST_PARAMETER + "=").append(NOT_A_NUMBER_MESSAGE);
+        } catch (Exception e) {
+            redirectUrl.append(handleDefaultCartModificationException(e));
         } finally {
             resp.sendRedirect(redirectUrl.toString());
         }

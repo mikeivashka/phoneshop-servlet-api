@@ -11,8 +11,7 @@
     </c:if>
 </c:forEach>
 <c:set var="totalPrice" value="${product.price.doubleValue() * inCart}"/>
-<tags:master pageTitle="${product.description}" errorMessage="${param.errorMessage}"
-             successMessage="${param.successMessage}">
+<tags:master pageTitle="${product.description}">
     <table>
         <tbody>
         <tr>

@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Currency;
 
-public class ProductTestCommonConditions {
+public abstract class ProductTestCommonConditions {
     protected Product product1;
     protected Product product2;
 

@@ -6,6 +6,7 @@ import com.es.phoneshop.model.cart.CartItem;
 import com.es.phoneshop.model.cart.CartService;
 import com.es.phoneshop.model.product.Product;
 
+import java.math.BigDecimal;
 import java.util.Deque;
 
 public class CartServiceImpl implements CartService {
@@ -33,12 +34,25 @@ public class CartServiceImpl implements CartService {
                             cartItem -> cartItem.setQuantity(quantity),
                             () -> cartItems.add(new CartItem(product, quantity))
                     );
+            updateCartStatistics(cart);
         }
     }
 
     @Override
     public boolean delete(Cart cart, Product product) {
-        return cart.getItems().removeIf(cartItem -> cartItem.getProduct().equals(product));
+        boolean deleted = cart.getItems().removeIf(cartItem -> cartItem.getProduct().equals(product));
+        updateCartStatistics(cart);
+        return deleted;
+    }
+
+    private void updateCartStatistics(Cart cart) {
+        cart.setTotalQuantity(cart.getItems().stream()
+                .mapToInt(CartItem::getQuantity)
+                .sum());
+        cart.setTotalPrice(cart.getItems().stream()
+                .map(cartItem -> cartItem.getProduct().getPrice().multiply(BigDecimal.valueOf(cartItem.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add)
+        );
     }
 
     private static class LazySingletonHolder {

@@ -8,6 +8,8 @@ import com.es.phoneshop.model.product.impl.ProductServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.math.BigDecimal;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -63,6 +65,45 @@ public class CartServiceTest extends ProductTestCommonConditions {
                 .filter(cartItem -> cartItem.getProduct().equals(product1))
                 .findAny().get().getQuantity()
         );
+    }
+
+    @Test
+    public void testUpdateRecalculatesTotalPrice() {
+        cart.getItems().add(new CartItem(product1, QUANTITY_ONE));
+        cart.setTotalPrice(product1.getPrice());
+
+        cartService.update(cart, product1, QUANTITY_TWO);
+
+        assertEquals(product1.getPrice().multiply(BigDecimal.valueOf(QUANTITY_TWO)), cart.getTotalPrice());
+    }
+
+    @Test
+    public void testDeleteRecalculatesTotalPrice() {
+        cart.getItems().add(new CartItem(product1, QUANTITY_ONE));
+        cart.setTotalPrice(product1.getPrice());
+
+        cartService.delete(cart, product1);
+
+        assertEquals(BigDecimal.ZERO, cart.getTotalPrice());
+    }
+
+    @Test
+    public void testUpdateRecalculatesTotalQuantity() {
+        cart.getItems().add(new CartItem(product1, QUANTITY_ONE));
+        cart.setTotalQuantity(QUANTITY_ONE);
+
+        cartService.update(cart, product1, QUANTITY_TWO);
+        assertEquals(QUANTITY_TWO, cart.getTotalQuantity());
+    }
+
+    @Test
+    public void testDeleteRecalculatesTotalQuantity() {
+        cart.getItems().add(new CartItem(product1, QUANTITY_ONE));
+        cart.setTotalQuantity(QUANTITY_ONE);
+
+        cartService.delete(cart, product1);
+
+        assertEquals(0, cart.getTotalQuantity());
     }
 
     @Test(expected = OutOfStockException.class)

@@ -2,10 +2,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ tag trimDirectiveWhitespaces="true" %>
 <%@ attribute name="pageTitle" required="true" %>
-<%@attribute name="successMessage" required="false" %>
-<%@attribute name="errorMessage" required="false" %>
 <c:set var="recentProducts" value="${sessionScope.get('recentProducts')}"/>
-
 <html>
 <head>
     <title>${pageTitle}</title>
@@ -18,16 +15,19 @@
         <img src="${pageContext.servletContext.contextPath}/images/logo.svg" alt="logo"/>
         PhoneShop
     </a>
+    <a href="${pageContext.servletContext.contextPath}/cart">
+        <jsp:include page="/cart/minicart"/>
+    </a>
 </header>
 <main>
-    <c:if test="${not empty successMessage}">
+    <c:if test="${not empty param.successMessage}">
         <div>
-            <b class="success">${successMessage}</b>
+            <b class="success">${param.successMessage}</b>
         </div>
     </c:if>
-    <c:if test="${not empty errorMessage}">
+    <c:if test="${not empty param.errorMessage}">
         <div>
-            <b class="error">${errorMessage}</b>
+            <b class="error">${param.errorMessage}</b>
         </div>
     </c:if>
     <jsp:doBody/>

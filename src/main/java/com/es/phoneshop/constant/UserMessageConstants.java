@@ -5,6 +5,7 @@ public final class UserMessageConstants {
     public static final String REMOVE_FROM_CART_SUCCESS_MESSAGE = "Successfully removed from cart";
     public static final String NOT_A_NUMBER_MESSAGE = "Not a number";
     public static final String UNKNOWN_ERROR_MESSAGE = "Unknown error";
+    public static final String UPDATE_CART_SUCCESS_MESSAGE = "Cart updated successfully";
 
     private UserMessageConstants() {
     }
