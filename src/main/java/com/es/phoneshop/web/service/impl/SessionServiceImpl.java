@@ -29,6 +29,7 @@ public class SessionServiceImpl implements SessionService {
     public String updateCurrentCart(HttpSession session, Product product, int quantity) {
         synchronized (WebUtils.getSessionMutex(session)) {
             Cart cart = castAttribute(session.getAttribute(CART_SESSION_ATTRIBUTE), Cart.class);
+            session.setAttribute(CART_SESSION_ATTRIBUTE, cart);
             if (quantity > 0) {
                 cartService.update(cart, product, quantity);
                 return ADD_TO_CART_SUCCESS_MESSAGE;
