@@ -6,5 +6,7 @@ public interface CartService {
     void update(Cart cart, Product product, int quantity);
 
     boolean delete(Cart cart, Product product);
+
+    void clear(Cart cart);
 }
 

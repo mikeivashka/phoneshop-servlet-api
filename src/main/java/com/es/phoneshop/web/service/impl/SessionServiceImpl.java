@@ -28,7 +28,7 @@ public class SessionServiceImpl implements SessionService {
     @Override
     public String updateCurrentCart(HttpSession session, Product product, int quantity) {
         synchronized (WebUtils.getSessionMutex(session)) {
-            Cart cart = castAttribute(session.getAttribute(CART_SESSION_ATTRIBUTE), Cart.class);
+            Cart cart = getCart(session);
             session.setAttribute(CART_SESSION_ATTRIBUTE, cart);
             if (quantity > 0) {
                 cartService.update(cart, product, quantity);
@@ -38,6 +38,11 @@ public class SessionServiceImpl implements SessionService {
             }
             return "";
         }
+    }
+
+    @Override
+    public Cart getCart(HttpSession session) {
+        return castAttribute(session.getAttribute(CART_SESSION_ATTRIBUTE), Cart.class);
     }
 
     @SneakyThrows

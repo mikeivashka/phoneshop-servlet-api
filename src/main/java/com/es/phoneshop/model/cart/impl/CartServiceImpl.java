@@ -45,6 +45,12 @@ public class CartServiceImpl implements CartService {
         return deleted;
     }
 
+    @Override
+    public void clear(Cart cart) {
+        cart.getItems().clear();
+        updateCartStatistics(cart);
+    }
+
     private void updateCartStatistics(Cart cart) {
         cart.setTotalQuantity(cart.getItems().stream()
                 .mapToInt(CartItem::getQuantity)
