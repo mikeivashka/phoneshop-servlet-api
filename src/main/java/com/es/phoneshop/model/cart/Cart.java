@@ -11,6 +11,12 @@ public class Cart implements Serializable {
     private int totalQuantity;
     private BigDecimal totalPrice;
 
+    public Cart(Cart cart) {
+        this.items = new ArrayDeque<>(cart.items);
+        this.totalQuantity = cart.totalQuantity;
+        this.totalPrice = cart.totalPrice;
+    }
+
     public Cart() {
         this.items = new ArrayDeque<>();
     }

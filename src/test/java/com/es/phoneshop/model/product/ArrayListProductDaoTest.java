@@ -32,7 +32,7 @@ public class ArrayListProductDaoTest extends ProductTestCommonConditions {
     @Test
     public void testGetProduct() {
         productDao.save(product1);
-        assertEquals(product1, productDao.getProduct(product1.getId()).get());
+        assertEquals(product1, productDao.findById(product1.getId()).get());
     }
 
     @Test
@@ -57,7 +57,7 @@ public class ArrayListProductDaoTest extends ProductTestCommonConditions {
     public void testDeleteProduct() {
         productDao.save(product1);
         productDao.delete(product1.getId());
-        assertFalse(productDao.getProduct(product1.getId()).isPresent());
+        assertFalse(productDao.findById(product1.getId()).isPresent());
     }
 
     @Test
@@ -72,7 +72,7 @@ public class ArrayListProductDaoTest extends ProductTestCommonConditions {
         Long firstProductId = product1.getId();
         product2.setId(firstProductId);
         productDao.save(product2);
-        assertEquals(product2, productDao.getProduct(firstProductId).get());
+        assertEquals(product2, productDao.findById(firstProductId).get());
     }
 
     @Parameters(method = "provideZeroStockOrNullPrice")
@@ -82,7 +82,7 @@ public class ArrayListProductDaoTest extends ProductTestCommonConditions {
         product1.setStock(stock);
         productDao.save(product1);
         assertFalse(productDao.findProducts().contains(product1));
-        assertTrue(productDao.getProduct(product1.getId()).isPresent());
+        assertTrue(productDao.findById(product1.getId()).isPresent());
     }
 
     private Object[] provideZeroStockOrNullPrice() {

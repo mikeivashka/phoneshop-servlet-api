@@ -39,7 +39,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Optional<Product> findById(Long id) {
-        return productDao.getProduct(id);
+        return productDao.findById(id);
     }
 
     @Override

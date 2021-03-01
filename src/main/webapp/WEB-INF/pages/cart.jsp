@@ -61,6 +61,9 @@
             <button>Update</button>
         </p>
     </form>
+    <form action="${pageContext.servletContext.contextPath}/checkout">
+        <button>Checkout</button>
+    </form>
 </tags:master>
 <script type="text/javascript">
     function deleteCartItem(id) {
