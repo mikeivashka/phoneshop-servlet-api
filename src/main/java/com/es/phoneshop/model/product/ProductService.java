@@ -20,6 +20,8 @@ public interface ProductService {
 
     List<Product> findByQuery(String query, SortStrategyProvider<Product> sortStrategy);
 
+    List<Product> findByAdvancedSearchCriteria(AdvancedSearchCriteria criteria);
+
     Optional<Product> findById(Long id);
 
     void add(Product product);

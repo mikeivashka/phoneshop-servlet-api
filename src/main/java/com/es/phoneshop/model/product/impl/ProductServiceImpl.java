@@ -1,5 +1,6 @@
 package com.es.phoneshop.model.product.impl;
 
+import com.es.phoneshop.enumeration.SearchMode;
 import com.es.phoneshop.enumeration.SortField;
 import com.es.phoneshop.enumeration.SortOrder;
 import com.es.phoneshop.model.product.*;
@@ -7,8 +8,11 @@ import com.es.phoneshop.model.product.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ProductServiceImpl implements ProductService {
     private final ProductDao productDao = ArrayListProductDao.getInstance();
@@ -30,6 +34,30 @@ public class ProductServiceImpl implements ProductService {
         } else {
             return ProductSortStrategyProvider.empty();
         }
+    }
+
+    @Override
+    public List<Product> findByAdvancedSearchCriteria(AdvancedSearchCriteria criteria) {
+        Stream<Product> result;
+        if (criteria.getQuery() != null && criteria.getSearchMode() == SearchMode.ANY) {
+            result = findByQuery(criteria.getQuery()).stream();
+        } else if (criteria.getSearchMode() == SearchMode.ALL) {
+            String[] words = criteria.getQuery().toLowerCase().split(" ");
+            result = findAll().stream()
+                    .filter(product ->
+                            Arrays.stream(words)
+                                    .allMatch(word -> product.getDescription().toLowerCase().contains(word))
+                    );
+        } else {
+            result = findAll().stream();
+        }
+        if (criteria.getMinPrice() != null) {
+            result = result.filter(product -> product.getPrice().compareTo(criteria.getMinPrice()) >= 0);
+        }
+        if (criteria.getMaxPrice() != null) {
+            result = result.filter(product -> product.getPrice().compareTo(criteria.getMaxPrice()) <= 0);
+        }
+        return result.collect(Collectors.toList());
     }
 
     @Override
