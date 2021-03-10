@@ -12,7 +12,10 @@ public final class RequestParameterConstants {
     public static final String PHONE_NUMBER_REQUEST_PARAMETER = "phone";
     public static final String DELIVERY_ADDRESS_REQUEST_PARAMETER = "deliveryAddress";
     public static final String DELIVERY_DATE_REQUEST_PARAMETER = "deliveryDate";
-
+    public static final String MIN_PRICE_REQUEST_PARAMETER = "minPrice";
+    public static final String MAX_PRICE_REQUEST_PARAMETER = "maxPrice";
+    public static final String SEARCH_MODE_REQUEST_PARAMETER = "searchMode";
+    public static final String DESCRIPTION_REQUEST_PARAMETER = "description";
     private RequestParameterConstants() {
     }
 }

@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.es.phoneshop.constant.RequestParameterConstants.*;
 import static com.es.phoneshop.constant.UserMessageConstants.NOT_A_NUMBER_MESSAGE;
 
 public class AdvancedSearchPageServlet extends HttpServlet {
@@ -45,10 +46,10 @@ public class AdvancedSearchPageServlet extends HttpServlet {
     }
 
     private AdvancedSearchCriteria extractSearchCriteriaFromRequest(HttpServletRequest request, Map<String, String> errors) {
-        String description = request.getParameter("description");
-        String searchModeString = request.getParameter("searchMode");
-        String minPriceString = request.getParameter("minPrice");
-        String maxPriceString = request.getParameter("maxPrice");
+        String description = request.getParameter(DESCRIPTION_REQUEST_PARAMETER);
+        String searchModeString = request.getParameter(SEARCH_MODE_REQUEST_PARAMETER);
+        String minPriceString = request.getParameter(MIN_PRICE_REQUEST_PARAMETER);
+        String maxPriceString = request.getParameter(MAX_PRICE_REQUEST_PARAMETER);
         if (description == null && searchModeString == null && minPriceString == null && maxPriceString == null) {
             return null;
         }
@@ -56,8 +57,8 @@ public class AdvancedSearchPageServlet extends HttpServlet {
         if (searchModeString != null) {
             searchMode = SearchMode.valueOf(searchModeString.toUpperCase());
         }
-        BigDecimal minPrice = extractPriceFromString(minPriceString, "minPrice", errors);
-        BigDecimal maxPrice = extractPriceFromString(maxPriceString, "maxPrice", errors);
+        BigDecimal minPrice = extractPriceFromString(minPriceString, MIN_PRICE_REQUEST_PARAMETER, errors);
+        BigDecimal maxPrice = extractPriceFromString(maxPriceString, MAX_PRICE_REQUEST_PARAMETER, errors);
         return new AdvancedSearchCriteria(minPrice, maxPrice, description, searchMode);
     }
 
